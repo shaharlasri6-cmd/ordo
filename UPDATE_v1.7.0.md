@@ -1,0 +1,9 @@
+# QuickContactsWidget v1.7.0
+
+- Update flow now downloads the APK and automatically opens Android's installer when the download finishes.
+- One-time Android "install unknown apps" permission is handled by the app; after granting it, the pending installer resumes automatically.
+- Final Android installation confirmation remains required by the operating system.
+- Call overlay is now tappable before dialing; tapping it cancels the pending call immediately.
+- Cancellation shows a short, clean "בוטל" state and no call is placed.
+- Overlay window is compact/touchable and no longer blocks the whole home screen.
+- GitHub Actions release publishing is now idempotent: an existing release asset is replaced instead of failing.

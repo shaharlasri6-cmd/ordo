@@ -11,8 +11,8 @@ android {
         applicationId = "com.shahar.quickcontacts"
         minSdk = 26
         targetSdk = 35
-        versionCode = 8
-        versionName = "1.6.1"
+        versionCode = 9
+        versionName = "1.7.0"
     }
 
     buildFeatures {
@@ -28,4 +28,9 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+}
+
+
+dependencies {
+    implementation("androidx.core:core-ktx:1.15.0")
 }

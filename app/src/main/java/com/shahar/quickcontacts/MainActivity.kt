@@ -44,6 +44,12 @@ class MainActivity : Activity() {
     private val muted = Color.rgb(103, 110, 126)
     private val accent = Color.rgb(74, 99, 220)
 
+
+    override fun onResume() {
+        super.onResume()
+        updateManager.resumePendingInstaller()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         selected = ContactStore.load(this).toMutableList()

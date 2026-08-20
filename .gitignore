@@ -1,8 +1,5 @@
 signing/
 .gradle/
 **/build/
-
-.gradle/
-**/build/
 local.properties
 *.iml

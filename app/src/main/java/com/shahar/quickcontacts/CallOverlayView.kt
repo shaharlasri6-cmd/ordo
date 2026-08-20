@@ -18,10 +18,12 @@ import kotlin.math.sin
 class CallOverlayView(
     context: Context,
     private val contactName: String,
-    private val demo: Boolean
+    private val demo: Boolean,
+    private val onCancel: () -> Unit
 ) : View(context) {
     private val density = resources.displayMetrics.density
     private var phase = 0f
+    private var cancelled = false
     private val accent = accentFor(contactName)
     private val accentSoft = Color.argb(220, 103, 236, 224)
 
@@ -49,6 +51,19 @@ class CallOverlayView(
     private val subTextPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         textAlign = Paint.Align.CENTER
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
+    }
+
+    init {
+        isClickable = true
+        setOnClickListener {
+            if (!cancelled) onCancel()
+        }
+    }
+
+    fun showCancelled() {
+        cancelled = true
+        phaseAnimator.cancel()
+        invalidate()
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -99,8 +114,16 @@ class CallOverlayView(
         textPaint.textSize = base * .62f
         canvas.drawText(letter, cx, cy - (textPaint.ascent() + textPaint.descent()) / 2f, textPaint)
 
-        val label = if (demo) "תצוגת הדגמה" else "מתקשר…"
-        val nameText = if (demo) "בלי לבצע שיחה" else contactName
+        val label = when {
+            cancelled -> "בוטל"
+            demo -> "תצוגת הדגמה"
+            else -> "מתקשר…"
+        }
+        val nameText = when {
+            cancelled -> "השיחה לא תצא"
+            demo -> "בלי לבצע שיחה"
+            else -> contactName
+        }
         val chipY = cy + base * 1.95f
         val chipW = min(width * .78f, dp(300f))
         val chipH = dp(76f)
@@ -117,6 +140,12 @@ class CallOverlayView(
         textPaint.textSize = dp(19f)
         textPaint.color = Color.argb((255*breathe).toInt(), 255, 255, 255)
         canvas.drawText(nameText, cx, chipY+dp(17f), textPaint)
+
+        if (!demo && !cancelled) {
+            subTextPaint.textSize = dp(11f)
+            subTextPaint.color = Color.argb(150, 220, 230, 240)
+            canvas.drawText("לחץ לביטול לפני החיוג", cx, chipY + dp(47f), subTextPaint)
+        }
     }
 
     fun stop() = phaseAnimator.cancel()

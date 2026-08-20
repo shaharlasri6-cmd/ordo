@@ -16,7 +16,8 @@ import java.util.concurrent.Executors
 
 class UpdateManager(private val activity: Activity) {
     companion object {
-        private const val LATEST_API = "https://api.github.com/repos/shaharlasri6-cmd/QuickContactsWidget/releases/latest"
+        private const val LATEST_API =
+            "https://api.github.com/repos/shaharlasri6-cmd/QuickContactsWidget/releases/latest"
         private const val APK_MIME = "application/vnd.android.package-archive"
     }
 
@@ -31,15 +32,27 @@ class UpdateManager(private val activity: Activity) {
                     if (isNewer(release.version, BuildConfig.VERSION_NAME)) {
                         showUpdate(release)
                     } else if (showUpToDate) {
-                        Toast.makeText(activity, "האפליקציה מעודכנת לגרסה ${BuildConfig.VERSION_NAME}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            activity,
+                            "האפליקציה מעודכנת לגרסה ${BuildConfig.VERSION_NAME}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             } catch (_: Exception) {
                 if (showUpToDate) main.post {
-                    Toast.makeText(activity, "לא הצלחתי לבדוק עדכונים כרגע", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        activity,
+                        "לא הצלחתי לבדוק עדכונים כרגע",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
+    }
+
+    fun resumePendingInstaller() {
+        UpdateDownloadReceiver.resumePendingInstaller(activity)
     }
 
     private fun fetchLatest(): ReleaseInfo {
@@ -50,6 +63,7 @@ class UpdateManager(private val activity: Activity) {
             setRequestProperty("Accept", "application/vnd.github+json")
             setRequestProperty("User-Agent", "QuickContactsWidget/${BuildConfig.VERSION_NAME}")
         }
+
         try {
             if (connection.responseCode !in 200..299) error("HTTP ${connection.responseCode}")
             val json = JSONObject(connection.inputStream.bufferedReader().use { it.readText() })
@@ -57,6 +71,7 @@ class UpdateManager(private val activity: Activity) {
             val version = tag.removePrefix("v")
             val assets = json.getJSONArray("assets")
             var apkUrl: String? = null
+
             for (i in 0 until assets.length()) {
                 val asset = assets.getJSONObject(i)
                 if (asset.optString("name").endsWith(".apk", ignoreCase = true)) {
@@ -64,6 +79,7 @@ class UpdateManager(private val activity: Activity) {
                     break
                 }
             }
+
             return ReleaseInfo(version, tag, apkUrl ?: error("No APK asset"))
         } finally {
             connection.disconnect()
@@ -72,30 +88,59 @@ class UpdateManager(private val activity: Activity) {
 
     private fun showUpdate(release: ReleaseInfo) {
         if (activity.isFinishing || activity.isDestroyed) return
+
         AlertDialog.Builder(activity)
             .setTitle("עדכון חדש זמין")
-            .setMessage("גרסה ${release.version} מוכנה להורדה.\n\nמותקנת אצלך גרסה ${BuildConfig.VERSION_NAME}.")
+            .setMessage(
+                "גרסה ${release.version} זמינה.\n\n" +
+                    "לחיצה על „עדכן עכשיו” תוריד את ה-APK ותפתח אוטומטית את התקנת Android."
+            )
             .setNegativeButton("אחר כך", null)
-            .setPositiveButton("הורד עדכון") { _, _ -> download(release) }
+            .setPositiveButton("עדכן עכשיו") { _, _ ->
+                download(release)
+            }
             .show()
     }
 
     private fun download(release: ReleaseInfo) {
         try {
-            val manager = activity.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+            val manager =
+                activity.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             val fileName = "QuickContactsWidget-${release.tag}.apk"
+
             val request = DownloadManager.Request(Uri.parse(release.apkUrl))
                 .setTitle("Quick Contacts ${release.version}")
-                .setDescription("מוריד עדכון…")
+                .setDescription("מוריד ומכין עדכון…")
                 .setMimeType(APK_MIME)
-                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                .setNotificationVisibility(
+                    DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
+                )
                 .setAllowedOverMetered(true)
                 .setAllowedOverRoaming(true)
-                .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
-            manager.enqueue(request)
-            Toast.makeText(activity, "העדכון יורד. בסיום פתח אותו מההתראה כדי להתקין.", Toast.LENGTH_LONG).show()
+                .setDestinationInExternalPublicDir(
+                    Environment.DIRECTORY_DOWNLOADS,
+                    fileName
+                )
+
+            val id = manager.enqueue(request)
+            activity.getSharedPreferences(
+                UpdateDownloadReceiver.PREFS,
+                Context.MODE_PRIVATE
+            ).edit()
+                .putLong(UpdateDownloadReceiver.KEY_DOWNLOAD_ID, id)
+                .apply()
+
+            Toast.makeText(
+                activity,
+                "העדכון יורד. בסיום מסך ההתקנה ייפתח אוטומטית.",
+                Toast.LENGTH_LONG
+            ).show()
         } catch (_: Exception) {
-            Toast.makeText(activity, "לא הצלחתי להתחיל את ההורדה", Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                activity,
+                "לא הצלחתי להתחיל את ההורדה",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -103,6 +148,7 @@ class UpdateManager(private val activity: Activity) {
         val r = remote.split('.').map { it.toIntOrNull() ?: 0 }
         val l = local.split('.').map { it.toIntOrNull() ?: 0 }
         val n = maxOf(r.size, l.size)
+
         for (i in 0 until n) {
             val rv = r.getOrElse(i) { 0 }
             val lv = l.getOrElse(i) { 0 }
@@ -111,5 +157,9 @@ class UpdateManager(private val activity: Activity) {
         return false
     }
 
-    private data class ReleaseInfo(val version: String, val tag: String, val apkUrl: String)
+    private data class ReleaseInfo(
+        val version: String,
+        val tag: String,
+        val apkUrl: String
+    )
 }
