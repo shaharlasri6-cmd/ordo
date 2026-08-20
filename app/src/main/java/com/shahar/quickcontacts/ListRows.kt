@@ -10,26 +10,22 @@ import android.widget.LinearLayout
 import android.widget.TextView
 
 object ListRows {
-
     fun row(
         activity: Activity,
         title: String,
         subtitle: String,
         accent: String = "•"
     ): LinearLayout {
-
         val container = LinearLayout(activity).apply {
             orientation = LinearLayout.HORIZONTAL
             layoutDirection = View.LAYOUT_DIRECTION_RTL
             gravity = Gravity.CENTER_VERTICAL
-
             setPadding(
                 UiKit.dp(activity, 16),
                 UiKit.dp(activity, 14),
                 UiKit.dp(activity, 16),
                 UiKit.dp(activity, 14)
             )
-
             background = UiKit.rounded(
                 Color.rgb(28, 33, 45),
                 UiKit.dp(activity, 18),
@@ -44,7 +40,6 @@ object ListRows {
             gravity = Gravity.CENTER
             typeface = Typeface.DEFAULT_BOLD
         }
-
         container.addView(
             icon,
             LinearLayout.LayoutParams(
@@ -53,38 +48,26 @@ object ListRows {
             )
         )
 
-        val textContainer = LinearLayout(activity).apply {
+        val texts = LinearLayout(activity).apply {
             orientation = LinearLayout.VERTICAL
             layoutDirection = View.LAYOUT_DIRECTION_RTL
         }
-
-        val titleView = TextView(activity).apply {
+        texts.addView(TextView(activity).apply {
             text = title
             textSize = 16f
             setTextColor(UiKit.ink)
             typeface = Typeface.DEFAULT_BOLD
             gravity = Gravity.START
-        }
-
-        val subtitleView = TextView(activity).apply {
+        })
+        texts.addView(TextView(activity).apply {
             text = subtitle
             textSize = 13f
             setTextColor(UiKit.muted)
             gravity = Gravity.START
-
-            setPadding(
-                0,
-                UiKit.dp(activity, 3),
-                0,
-                0
-            )
-        }
-
-        textContainer.addView(titleView)
-        textContainer.addView(subtitleView)
-
+            setPadding(0, UiKit.dp(activity, 3), 0, 0)
+        })
         container.addView(
-            textContainer,
+            texts,
             LinearLayout.LayoutParams(
                 0,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -98,7 +81,6 @@ object ListRows {
         ).apply {
             bottomMargin = UiKit.dp(activity, 9)
         }
-
         return container
     }
 }

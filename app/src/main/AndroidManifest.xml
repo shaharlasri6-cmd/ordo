@@ -76,6 +76,15 @@
             android:exported="false" />
 
         <receiver
+            android:name=".QuickAddReceiver"
+            android:exported="false" />
+
+        <service
+            android:name=".QuickAddOverlayService"
+            android:exported="false"
+            android:foregroundServiceType="shortService" />
+
+        <receiver
             android:name=".CallActionReceiver"
             android:exported="false" />
 

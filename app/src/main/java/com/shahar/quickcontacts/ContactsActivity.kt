@@ -126,10 +126,6 @@ class ContactsActivity : Activity() {
         }
         content.addView(add)
 
-        val widget = actionCard("⌂", "הוסף למסך הבית", "הווידג'ט המשולב של Ordo", false)
-        widget.setOnClickListener { pinWidget() }
-        content.addView(widget)
-
         val demoWidget = UiKit.compactButton(this, "◉  הוסף ווידג'ט הדגמה")
         demoWidget.setOnClickListener { pinDemoWidget() }
         content.addView(demoWidget, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply { bottomMargin = dp(8) })
