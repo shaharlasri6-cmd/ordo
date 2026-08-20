@@ -65,6 +65,19 @@ class QuickContactsWidget : AppWidgetProvider() {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
             )
             views.setPendingIntentTemplate(R.id.contacts_grid, template)
+
+            val taskIntent = Intent(context, TasksActivity::class.java).apply { putExtra("autoAdd", true) }
+            val taskPending = PendingIntent.getActivity(context, widgetId + 10000, taskIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            views.setOnClickPendingIntent(R.id.task_quick_card, taskPending)
+            val openTasks = PersonalStore.loadTasks(context).count { !it.done }
+            views.setTextViewText(R.id.task_quick_sub, if (openTasks == 0) "אין פתוחות" else "$openTasks פתוחות")
+
+            val reminderIntent = Intent(context, RemindersActivity::class.java).apply { putExtra("autoAdd", true) }
+            val reminderPending = PendingIntent.getActivity(context, widgetId + 20000, reminderIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            views.setOnClickPendingIntent(R.id.reminder_quick_card, reminderPending)
+            val next = PersonalStore.loadReminders(context).filter { it.atMillis >= System.currentTimeMillis() }.minByOrNull { it.atMillis }
+            val nextText = next?.let { java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault()).format(java.util.Date(it.atMillis)) } ?: "אין קרובה"
+            views.setTextViewText(R.id.reminder_quick_sub, nextText)
             manager.updateAppWidget(widgetId, views)
         }
     }

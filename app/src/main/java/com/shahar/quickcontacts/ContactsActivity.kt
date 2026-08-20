@@ -39,10 +39,10 @@ class ContactsActivity : Activity() {
     private val mainHandler = Handler(Looper.getMainLooper())
     private val updateManager by lazy { UpdateManager(this) }
 
-    private val bg = Color.rgb(247, 248, 252)
-    private val ink = Color.rgb(26, 29, 38)
-    private val muted = Color.rgb(103, 110, 126)
-    private val accent = Color.rgb(74, 99, 220)
+    private val bg = UiKit.bg
+    private val ink = UiKit.ink
+    private val muted = UiKit.muted
+    private val accent = UiKit.accent
 
 
     override fun onResume() {
@@ -55,14 +55,12 @@ class ContactsActivity : Activity() {
         selected = ContactStore.load(this).toMutableList()
         buildUi()
         requestNeededPermissions()
-        mainHandler.postDelayed({ updateManager.check(false) }, 900)
-        mainHandler.postDelayed({ ensureOverlayPermission(false) }, 1400)
     }
 
     private fun buildUi() {
         window.statusBarColor = bg
         window.navigationBarColor = bg
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        window.decorView.systemUiVisibility = 0
 
         val root = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
@@ -98,8 +96,12 @@ class ContactsActivity : Activity() {
             layoutDirection = View.LAYOUT_DIRECTION_RTL
         }
 
+        content.addView(UiKit.compactButton(this, "⌂  חזור לדף הבית").apply {
+            setOnClickListener { startActivity(Intent(this@ContactsActivity, MainActivity::class.java).apply { addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) }); finish() }
+        }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply { bottomMargin = dp(18) })
+
         content.addView(TextView(this).apply {
-            text = "אנשי קשר מהירים"
+            text = "אנשי קשר"
             textSize = 29f
             setTextColor(ink)
             typeface = Typeface.DEFAULT_BOLD
@@ -124,21 +126,13 @@ class ContactsActivity : Activity() {
         }
         content.addView(add)
 
-        val widget = actionCard("⌂", "הוסף למסך הבית", "ווידג'ט אנשי הקשר השקוף", false)
+        val widget = actionCard("⌂", "הוסף למסך הבית", "הווידג'ט המשולב של Ordo", false)
         widget.setOnClickListener { pinWidget() }
         content.addView(widget)
 
-        val demoWidget = actionCard("◉", "הוסף ווידג'ט הדגמה", "לחיצה עליו מציגה את אנימציית השיחה בלי להתקשר", false)
+        val demoWidget = UiKit.compactButton(this, "◉  הוסף ווידג'ט הדגמה")
         demoWidget.setOnClickListener { pinDemoWidget() }
-        content.addView(demoWidget)
-
-        val overlayPermission = actionCard("◎", "אנימציה מעל מסך הבית", "הרשאה חד-פעמית כדי שהאנימציה לא תפתח את האפליקציה", false)
-        overlayPermission.setOnClickListener { ensureOverlayPermission(true) }
-        content.addView(overlayPermission)
-
-        val updates = actionCard("↻", "בדוק עדכונים", "בדיקה והורדה ישירות מתוך האפליקציה", false)
-        updates.setOnClickListener { updateManager.check(true) }
-        content.addView(updates)
+        content.addView(demoWidget, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply { bottomMargin = dp(8) })
 
         val section = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
@@ -207,7 +201,7 @@ class ContactsActivity : Activity() {
             gravity = Gravity.CENTER_VERTICAL
             layoutDirection = View.LAYOUT_DIRECTION_RTL
             setPadding(dp(16), dp(14), dp(16), dp(14))
-            background = rounded(if (primary) Color.WHITE else Color.rgb(252, 252, 254), dp(20), Color.rgb(228, 231, 239))
+            background = rounded(if (primary) UiKit.surface2 else UiKit.surface, dp(20), Color.rgb(48, 57, 82))
             isClickable = true
             isFocusable = true
         }
@@ -217,7 +211,7 @@ class ContactsActivity : Activity() {
             typeface = Typeface.DEFAULT_BOLD
             gravity = Gravity.CENTER
             setTextColor(if (primary) Color.WHITE else accent)
-            background = pill(if (primary) accent else Color.rgb(232, 236, 255), dp(16))
+            background = pill(if (primary) accent else UiKit.surface2, dp(16))
         }
         row.addView(symbolView, LinearLayout.LayoutParams(dp(48), dp(48)))
 
@@ -265,7 +259,7 @@ class ContactsActivity : Activity() {
                 gravity = Gravity.CENTER
                 setTextColor(muted)
                 setPadding(dp(16), dp(28), dp(16), dp(28))
-                background = rounded(Color.WHITE, dp(20), Color.rgb(229, 232, 240))
+                background = rounded(UiKit.surface, dp(20), Color.rgb(48,57,82))
             })
             return
         }
@@ -276,7 +270,7 @@ class ContactsActivity : Activity() {
                 gravity = Gravity.CENTER_VERTICAL
                 layoutDirection = View.LAYOUT_DIRECTION_RTL
                 setPadding(dp(14), dp(11), dp(12), dp(11))
-                background = rounded(Color.WHITE, dp(18), Color.rgb(230, 233, 241))
+                background = rounded(UiKit.surface, dp(18), Color.rgb(48,57,82))
             }
 
             val avatar = TextView(this).apply {

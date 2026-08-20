@@ -22,7 +22,8 @@ data class EventItem(
     val id: Long,
     val title: String,
     val atMillis: Long,
-    val note: String = ""
+    val note: String = "",
+    val reminderMinutes: Int = -1
 )
 
 object PersonalStore {
@@ -89,7 +90,8 @@ object PersonalStore {
                 o.getLong("id"),
                 o.getString("title"),
                 o.getLong("atMillis"),
-                o.optString("note", "")
+                o.optString("note", ""),
+                o.optInt("reminderMinutes", -1)
             )
         }
     }
@@ -101,7 +103,8 @@ object PersonalStore {
                 .put("id", it.id)
                 .put("title", it.title)
                 .put("atMillis", it.atMillis)
-                .put("note", it.note))
+                .put("note", it.note)
+                .put("reminderMinutes", it.reminderMinutes))
         }
         save(context, EVENTS, a)
     }

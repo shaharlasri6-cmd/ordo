@@ -1,0 +1,8 @@
+# QuickContactsWidget v1.6.0
+
+- Includes all v1.5.0 home-screen call overlay animation changes.
+- Automatically checks GitHub Releases for newer versions after app launch.
+- Adds a manual “Check for updates” action in the app.
+- Shows a simple update dialog with Download / Later.
+- Downloads the signed APK through Android Download Manager into Downloads.
+- Android remains responsible for the final installation confirmation.

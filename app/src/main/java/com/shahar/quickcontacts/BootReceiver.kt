@@ -13,5 +13,6 @@ class BootReceiver : BroadcastReceiver() {
         PersonalStore.loadReminders(context)
             .filter { it.atMillis > now }
             .forEach { ReminderScheduler.schedule(context, it) }
+        PersonalStore.loadEvents(context).filter { it.atMillis > now }.forEach { EventReminderScheduler.schedule(context, it) }
     }
 }

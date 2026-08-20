@@ -1,0 +1,7 @@
+# QuickContactsWidget v1.4.0
+
+- Demo-call widget: shows the call animation without placing a call.
+- Performance: contact loading moved off the UI thread; search is debounced and renders fewer rows; widget refresh is asynchronous.
+- Widget: switched to a scrollable RemoteViews GridView with cached avatars.
+- Contacts: selection limit raised from 10 to 30.
+- Responsive transparent widget: 3/4/5 columns based on width.
