@@ -1,0 +1,113 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:1:1-57:12
+INJECTED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:1:1-57:12
+INJECTED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:1:1-57:12
+INJECTED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:1:1-57:12
+	package
+		INJECTED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:1:11-69
+uses-permission#android.permission.READ_CONTACTS
+ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:2:5-72
+	android:name
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:2:22-69
+uses-permission#android.permission.CALL_PHONE
+ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:3:5-69
+	android:name
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:3:22-66
+uses-permission#android.permission.INTERNET
+ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:4:5-67
+	android:name
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:4:22-64
+uses-permission#android.permission.REQUEST_INSTALL_PACKAGES
+ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:5:5-83
+	android:name
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:5:22-80
+application
+ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:7:5-56:19
+INJECTED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:7:5-56:19
+	android:extractNativeLibs
+		INJECTED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml
+	android:label
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:9:9-41
+	android:roundIcon
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:11:9-47
+	android:icon
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:10:9-42
+	android:allowBackup
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:8:9-35
+	android:theme
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:12:9-51
+activity#com.shahar.quickcontacts.CallTransitionActivity
+ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:14:9-19:73
+	android:excludeFromRecents
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:17:13-46
+	android:noHistory
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:18:13-37
+	android:exported
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:16:13-37
+	android:theme
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:19:13-70
+	android:name
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:15:13-51
+activity#com.shahar.quickcontacts.MainActivity
+ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:21:9-28:20
+	android:exported
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:23:13-36
+	android:name
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:22:13-41
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:24:13-27:29
+action#android.intent.action.MAIN
+ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:25:17-69
+	android:name
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:25:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:26:17-77
+	android:name
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:26:27-74
+service#com.shahar.quickcontacts.ContactsWidgetService
+ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:30:9-33:40
+	android:exported
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:33:13-37
+	android:permission
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:32:13-69
+	android:name
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:31:13-50
+receiver#com.shahar.quickcontacts.QuickContactsWidget
+ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:35:9-44:20
+	android:exported
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:37:13-37
+	android:name
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:36:13-48
+intent-filter#action:name:android.appwidget.action.APPWIDGET_UPDATE
+ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:38:13-40:29
+action#android.appwidget.action.APPWIDGET_UPDATE
+ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:39:17-84
+	android:name
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:39:25-81
+meta-data#android.appwidget.provider
+ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:41:13-43:70
+	android:resource
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:43:17-67
+	android:name
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:42:17-58
+receiver#com.shahar.quickcontacts.DemoCallWidget
+ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:46:9-55:20
+	android:exported
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:48:13-37
+	android:name
+		ADDED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml:47:13-43
+uses-sdk
+INJECTED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml
+INJECTED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /home/shahar/Downloads/QuickContactsWidget/app/src/main/AndroidManifest.xml

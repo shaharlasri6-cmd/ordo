@@ -34,6 +34,7 @@ class MainActivity : Activity() {
     private var selected = mutableListOf<QuickContact>()
     private val io = Executors.newSingleThreadExecutor()
     private val mainHandler = Handler(Looper.getMainLooper())
+    private val updateManager by lazy { UpdateManager(this) }
 
     private val bg = Color.rgb(247, 248, 252)
     private val ink = Color.rgb(26, 29, 38)
@@ -45,6 +46,7 @@ class MainActivity : Activity() {
         selected = ContactStore.load(this).toMutableList()
         buildUi()
         requestNeededPermissions()
+        mainHandler.postDelayed({ updateManager.check(false) }, 900)
     }
 
     private fun buildUi() {
@@ -119,6 +121,10 @@ class MainActivity : Activity() {
         val demoWidget = actionCard("◉", "הוסף ווידג'ט הדגמה", "לחיצה עליו מציגה את אנימציית השיחה בלי להתקשר", false)
         demoWidget.setOnClickListener { pinDemoWidget() }
         content.addView(demoWidget)
+
+        val updates = actionCard("↻", "בדוק עדכונים", "בדיקה והורדה ישירות מתוך האפליקציה", false)
+        updates.setOnClickListener { updateManager.check(true) }
+        content.addView(updates)
 
         val section = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
