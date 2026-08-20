@@ -27,6 +27,7 @@ class CallTransitionActivity : Activity() {
         window.statusBarColor = Color.TRANSPARENT
         window.navigationBarColor = Color.TRANSPARENT
 
+        val demo = intent.getBooleanExtra("demo", false)
         val name = intent.getStringExtra("name").orEmpty()
         val number = intent.getStringExtra("number").orEmpty()
 
@@ -57,7 +58,7 @@ class CallTransitionActivity : Activity() {
         center.addView(pulseHolder, LinearLayout.LayoutParams(dp(160), dp(160)))
 
         center.addView(TextView(this).apply {
-            text = "מתקשר אל…"
+            text = if (demo) "הדגמת אנימציית שיחה" else "מתקשר אל…"
             textSize = 16f
             setTextColor(Color.rgb(157, 170, 188))
             gravity = Gravity.CENTER
@@ -90,7 +91,11 @@ class CallTransitionActivity : Activity() {
 
         pulse(ringOuter, 0)
         pulse(ringInner, 180)
-        handler.postDelayed({ startCall(number) }, 850)
+        if (demo) {
+            handler.postDelayed({ finish() }, 2200)
+        } else {
+            handler.postDelayed({ startCall(number) }, 850)
+        }
     }
 
     private fun pulse(view: View, delay: Long) {

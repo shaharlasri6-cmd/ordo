@@ -1,6 +1,6 @@
 # Quick Contacts Widget
 
-Android home-screen widget for up to 10 favorite contacts.
+Android home-screen widget for many favorite contacts.
 
 ## Features
 - Up to 10 contacts
@@ -26,7 +26,7 @@ Minimum Android version: Android 8.0 (API 26).
 - New application launcher icon.
 
 
-## v1.3.0
+## v1.4.0
 - Airier transparent widget layout
 - Even spacing using flexible contact slots
 - Less aggressive 5-column mode

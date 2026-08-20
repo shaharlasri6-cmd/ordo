@@ -23,6 +23,11 @@
             </intent-filter>
         </activity>
 
+        <service
+            android:name=".ContactsWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+            android:exported="false" />
+
         <receiver
             android:name=".QuickContactsWidget"
             android:exported="false">
@@ -32,6 +37,17 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/quick_contacts_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".DemoCallWidget"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/demo_call_widget_info" />
         </receiver>
     </application>
 </manifest>

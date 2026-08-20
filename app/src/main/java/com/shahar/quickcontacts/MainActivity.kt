@@ -10,6 +10,8 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
@@ -23,11 +25,15 @@ import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import java.util.Locale
+import java.util.concurrent.Executors
 
 class MainActivity : Activity() {
+    companion object { private const val MAX_CONTACTS = 30 }
     private lateinit var listBox: LinearLayout
     private lateinit var countText: TextView
     private var selected = mutableListOf<QuickContact>()
+    private val io = Executors.newSingleThreadExecutor()
+    private val mainHandler = Handler(Looper.getMainLooper())
 
     private val bg = Color.rgb(247, 248, 252)
     private val ink = Color.rgb(26, 29, 38)
@@ -106,9 +112,13 @@ class MainActivity : Activity() {
         }
         content.addView(add)
 
-        val widget = actionCard("⌂", "הוסף למסך הבית", "הווידג'ט שקוף ומשתלב עם הטפט", false)
+        val widget = actionCard("⌂", "הוסף למסך הבית", "ווידג'ט אנשי הקשר השקוף", false)
         widget.setOnClickListener { pinWidget() }
         content.addView(widget)
+
+        val demoWidget = actionCard("◉", "הוסף ווידג'ט הדגמה", "לחיצה עליו מציגה את אנימציית השיחה בלי להתקשר", false)
+        demoWidget.setOnClickListener { pinDemoWidget() }
+        content.addView(demoWidget)
 
         val section = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
@@ -137,7 +147,7 @@ class MainActivity : Activity() {
         content.addView(listBox)
 
         content.addView(TextView(this).apply {
-            text = "אפשר לבחור עד 10. שינוי ברשימה מתעדכן מיד בווידג'ט."
+            text = "אפשר לבחור עד 30 אנשי קשר. הווידג'ט ניתן לגלילה ומתעדכן מיד."
             textSize = 13f
             setTextColor(muted)
             gravity = Gravity.START
@@ -204,7 +214,7 @@ class MainActivity : Activity() {
 
     private fun renderSelected() {
         if (!::listBox.isInitialized) return
-        countText.text = "${selected.size}/10"
+        countText.text = "${selected.size}/$MAX_CONTACTS"
         listBox.removeAllViews()
 
         if (selected.isEmpty()) {
@@ -297,16 +307,10 @@ class MainActivity : Activity() {
     }
 
     private fun openContactSearch() {
-        if (selected.size >= 10) {
-            Toast.makeText(this, "כבר נבחרו 10 אנשי קשר", Toast.LENGTH_SHORT).show()
+        if (selected.size >= MAX_CONTACTS) {
+            Toast.makeText(this, "כבר נבחרו $MAX_CONTACTS אנשי קשר", Toast.LENGTH_SHORT).show()
             return
         }
-        val all = loadPhoneContacts()
-        if (all.none { c -> selected.none { it.id == c.id && it.number == c.number } }) {
-            Toast.makeText(this, "לא נמצאו אנשי קשר נוספים עם מספר טלפון", Toast.LENGTH_LONG).show()
-            return
-        }
-
         val dialogRoot = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             layoutDirection = View.LAYOUT_DIRECTION_RTL
@@ -319,6 +323,7 @@ class MainActivity : Activity() {
             gravity = Gravity.START
             setPadding(dp(14), dp(10), dp(14), dp(10))
             background = rounded(Color.rgb(246, 247, 251), dp(16), Color.rgb(224, 227, 236))
+            isEnabled = false
         }
         dialogRoot.addView(search, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(50)))
 
@@ -329,19 +334,26 @@ class MainActivity : Activity() {
         dialogRoot.addView(resultsScroll, scrollLp)
 
         val dialog = AlertDialog.Builder(this)
-            .setTitle("הוסף איש קשר")
+            .setTitle("הוסף אנשי קשר")
             .setView(dialogRoot)
             .setNegativeButton("סגור", null)
             .create()
 
-        fun showRows(query: String) {
-            results.removeAllViews()
-            val q = query.trim().lowercase(Locale.getDefault())
-            val availableNow = all.filterNot { c -> selected.any { it.id == c.id && it.number == c.number } }
-            val filtered = availableNow.filter {
-                q.isBlank() || it.name.lowercase(Locale.getDefault()).contains(q) || it.number.contains(q)
-            }.take(60)
+        var all: List<QuickContact> = emptyList()
+        var renderToken = 0
 
+        fun showRows(query: String) {
+            val token = ++renderToken
+            val q = query.trim().lowercase(Locale.getDefault())
+            val selectedKeys = selected.asSequence().map { "${it.id}:${it.number}" }.toHashSet()
+            val filtered = all.asSequence()
+                .filterNot { "${it.id}:${it.number}" in selectedKeys }
+                .filter { q.isBlank() || it.name.lowercase(Locale.getDefault()).contains(q) || it.number.contains(q) }
+                .take(30)
+                .toList()
+
+            if (token != renderToken) return
+            results.removeAllViews()
             filtered.forEach { contact ->
                 val row = LinearLayout(this).apply {
                     orientation = LinearLayout.HORIZONTAL
@@ -358,6 +370,7 @@ class MainActivity : Activity() {
                     setTextColor(Color.WHITE)
                     background = pill(accent, dp(999))
                 }, LinearLayout.LayoutParams(dp(42), dp(42)))
+
                 val labels = LinearLayout(this).apply {
                     orientation = LinearLayout.VERTICAL
                     setPadding(dp(12), 0, dp(12), 0)
@@ -382,15 +395,17 @@ class MainActivity : Activity() {
                     setTextColor(accent)
                     gravity = Gravity.CENTER
                 }, LinearLayout.LayoutParams(dp(40), dp(40)))
+
                 row.setOnClickListener {
-                    if (selected.size >= 10) {
-                        Toast.makeText(this, "כבר נבחרו 10 אנשי קשר", Toast.LENGTH_SHORT).show()
+                    if (selected.size >= MAX_CONTACTS) {
+                        Toast.makeText(this, "כבר נבחרו $MAX_CONTACTS אנשי קשר", Toast.LENGTH_SHORT).show()
                         return@setOnClickListener
                     }
                     selected.add(contact)
-                    saveAndRefresh()
+                    ContactStore.save(this, selected)
+                    QuickContactsWidget.refreshAll(this)
+                    renderSelected()
                     showRows(search.text?.toString().orEmpty())
-                    Toast.makeText(this, "${contact.name} נוסף", Toast.LENGTH_SHORT).show()
                 }
                 results.addView(row, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
                 results.addView(View(this).apply { setBackgroundColor(Color.rgb(236, 238, 243)) }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(1)))
@@ -398,7 +413,7 @@ class MainActivity : Activity() {
 
             if (filtered.isEmpty()) {
                 results.addView(TextView(this).apply {
-                    text = "לא נמצאו תוצאות"
+                    text = if (all.isEmpty()) "טוען אנשי קשר…" else "לא נמצאו תוצאות"
                     textSize = 14f
                     setTextColor(muted)
                     gravity = Gravity.CENTER
@@ -408,14 +423,28 @@ class MainActivity : Activity() {
         }
 
         search.addTextChangedListener(object : TextWatcher {
+            private var pending: Runnable? = null
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = showRows(s?.toString().orEmpty())
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                pending?.let(mainHandler::removeCallbacks)
+                val value = s?.toString().orEmpty()
+                pending = Runnable { showRows(value) }.also { mainHandler.postDelayed(it, 120) }
+            }
             override fun afterTextChanged(s: Editable?) {}
         })
 
         dialog.setOnShowListener {
             showRows("")
-            search.requestFocus()
+            io.execute {
+                val loaded = loadPhoneContacts()
+                mainHandler.post {
+                    if (!dialog.isShowing) return@post
+                    all = loaded
+                    search.isEnabled = true
+                    showRows(search.text?.toString().orEmpty())
+                    search.requestFocus()
+                }
+            }
         }
         dialog.show()
     }
@@ -453,6 +482,17 @@ class MainActivity : Activity() {
         }
     }
 
+
+    private fun pinDemoWidget() {
+        val manager = AppWidgetManager.getInstance(this)
+        val provider = ComponentName(this, DemoCallWidget::class.java)
+        if (manager.isRequestPinAppWidgetSupported) {
+            manager.requestPinAppWidget(provider, null, null)
+        } else {
+            Toast.makeText(this, "במסך הבית: לחיצה ארוכה → ווידג'טים → Quick Contacts Demo", Toast.LENGTH_LONG).show()
+        }
+    }
+
     private fun requestNeededPermissions() {
         val needed = mutableListOf<String>()
         if (checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) needed += Manifest.permission.READ_CONTACTS
@@ -462,8 +502,8 @@ class MainActivity : Activity() {
 
     private fun saveAndRefresh() {
         ContactStore.save(this, selected)
-        QuickContactsWidget.refreshAll(this)
         renderSelected()
+        QuickContactsWidget.refreshAll(this)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -471,6 +511,12 @@ class MainActivity : Activity() {
         if (requestCode == 501 && checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
             openContactSearch()
         }
+    }
+
+    override fun onDestroy() {
+        io.shutdownNow()
+        mainHandler.removeCallbacksAndMessages(null)
+        super.onDestroy()
     }
 
     private fun rounded(fill: Int, radius: Int, stroke: Int? = null) = GradientDrawable().apply {

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Quick Contacts</string>
     <string name="widget_description">אנשי קשר מהירים למסך הבית</string>
+    <string name="demo_widget_description">ווידג'ט הדגמה לאנימציית שיחה</string>
 </resources>

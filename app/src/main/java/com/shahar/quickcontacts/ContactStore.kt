@@ -10,7 +10,7 @@ object ContactStore {
     private const val KEY = "selected_contacts"
 
     fun save(context: Context, contacts: List<QuickContact>) {
-        val value = contacts.take(10).joinToString("\n") {
+        val value = contacts.joinToString("\n") {
             "${it.id}|${Uri.encode(it.name)}|${Uri.encode(it.number)}"
         }
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
@@ -27,6 +27,6 @@ object ContactStore {
                 val id = parts[0].toLongOrNull() ?: return@mapNotNull null
                 QuickContact(id, Uri.decode(parts[1]), Uri.decode(parts[2]))
             }
-        }.take(10)
+        }
     }
 }
