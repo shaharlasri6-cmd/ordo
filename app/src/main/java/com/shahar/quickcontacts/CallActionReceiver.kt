@@ -14,7 +14,7 @@ class CallActionReceiver : BroadcastReceiver() {
         val number = intent.getStringExtra("number").orEmpty()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(context)) {
-            Toast.makeText(context, "פתח את Quick Contacts ואשר ‘אנימציה מעל מסך הבית’", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "פתח את Ordo ואשר ‘אנימציה מעל מסך הבית’", Toast.LENGTH_LONG).show()
             return
         }
 

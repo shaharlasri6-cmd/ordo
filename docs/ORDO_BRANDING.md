@@ -1,6 +1,6 @@
 # Ordo
 
-Ordo is the new product name for the personal-assistant version of QuickContactsWidget.
+Ordo is the current product name of the personal assistant application.
 
 Core modules:
 - Contacts

@@ -179,7 +179,7 @@ class CallOverlayService : Service() {
 
         return builder
             .setSmallIcon(android.R.drawable.sym_action_call)
-            .setContentTitle("Quick Contacts")
+            .setContentTitle("Ordo")
             .setContentText("מציג אנימציית שיחה")
             .setOngoing(true)
             .setOnlyAlertOnce(true)

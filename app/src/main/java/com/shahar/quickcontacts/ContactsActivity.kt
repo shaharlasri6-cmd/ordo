@@ -519,7 +519,7 @@ class ContactsActivity : Activity() {
         if (manager.isRequestPinAppWidgetSupported) {
             manager.requestPinAppWidget(provider, null, null)
         } else {
-            Toast.makeText(this, "במסך הבית: לחיצה ארוכה → ווידג'טים → Quick Contacts", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "במסך הבית: לחיצה ארוכה → ווידג'טים → Ordo", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -530,7 +530,7 @@ class ContactsActivity : Activity() {
         if (manager.isRequestPinAppWidgetSupported) {
             manager.requestPinAppWidget(provider, null, null)
         } else {
-            Toast.makeText(this, "במסך הבית: לחיצה ארוכה → ווידג'טים → Quick Contacts Demo", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "במסך הבית: לחיצה ארוכה → ווידג'טים → Ordo Demo", Toast.LENGTH_LONG).show()
         }
     }
 

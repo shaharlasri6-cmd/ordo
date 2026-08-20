@@ -49,7 +49,7 @@ class UpdateDownloadReceiver : BroadcastReceiver() {
                 } catch (_: Exception) {
                     Toast.makeText(
                         context,
-                        "יש לאשר ל-Quick Contacts התקנת אפליקציות ממקור זה",
+                        "יש לאשר ל-Ordo התקנת אפליקציות ממקור זה",
                         Toast.LENGTH_LONG
                     ).show()
                 }

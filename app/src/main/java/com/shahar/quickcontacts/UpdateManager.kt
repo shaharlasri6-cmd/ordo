@@ -17,7 +17,7 @@ import java.util.concurrent.Executors
 class UpdateManager(private val activity: Activity) {
     companion object {
         private const val LATEST_API =
-            "https://api.github.com/repos/shaharlasri6-cmd/QuickContactsWidget/releases/latest"
+            "https://api.github.com/repos/shaharlasri6-cmd/ordo/releases/latest"
         private const val APK_MIME = "application/vnd.android.package-archive"
     }
 
@@ -61,7 +61,7 @@ class UpdateManager(private val activity: Activity) {
             readTimeout = 5000
             requestMethod = "GET"
             setRequestProperty("Accept", "application/vnd.github+json")
-            setRequestProperty("User-Agent", "QuickContactsWidget/${BuildConfig.VERSION_NAME}")
+            setRequestProperty("User-Agent", "Ordo/${BuildConfig.VERSION_NAME}")
         }
 
         try {
@@ -106,10 +106,10 @@ class UpdateManager(private val activity: Activity) {
         try {
             val manager =
                 activity.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-            val fileName = "QuickContactsWidget-${release.tag}.apk"
+            val fileName = "Ordo-${release.tag}.apk"
 
             val request = DownloadManager.Request(Uri.parse(release.apkUrl))
-                .setTitle("Quick Contacts ${release.version}")
+                .setTitle("Ordo ${release.version}")
                 .setDescription("מוריד ומכין עדכון…")
                 .setMimeType(APK_MIME)
                 .setNotificationVisibility(

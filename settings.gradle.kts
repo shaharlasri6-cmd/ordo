@@ -12,5 +12,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "QuickContactsWidget"
+rootProject.name = "Ordo"
 include(":app")
