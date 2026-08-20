@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "17"
@@ -25,17 +25,35 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Restore keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > quickcontacts-release.jks
+
       - name: Make Gradle executable
         run: chmod +x gradlew
 
       - name: Build APK
         run: ./gradlew assembleDebug
 
-      - name: Prepare APK
+      - name: Sign APK
         run: |
-          TAG="${GITHUB_REF_NAME}"
-          cp app/build/outputs/apk/debug/app-debug.apk \
-             "QuickContactsWidget-${TAG}.apk"
+          ZIPALIGN="$ANDROID_HOME/build-tools/35.0.0/zipalign"
+          APKSIGNER="$ANDROID_HOME/build-tools/35.0.0/apksigner"
+
+          "$ZIPALIGN" -f -p 4 \
+            app/build/outputs/apk/debug/app-debug.apk \
+            app-aligned.apk
+
+          "$APKSIGNER" sign \
+            --ks quickcontacts-release.jks \
+            --ks-key-alias "${{ secrets.KEY_ALIAS }}" \
+            --ks-pass pass:"${{ secrets.KEYSTORE_PASSWORD }}" \
+            --key-pass pass:"${{ secrets.KEY_PASSWORD }}" \
+            --out "QuickContactsWidget-${GITHUB_REF_NAME}.apk" \
+            app-aligned.apk
+
+          "$APKSIGNER" verify --verbose \
+            "QuickContactsWidget-${GITHUB_REF_NAME}.apk"
 
       - name: Create GitHub Release
         env:
