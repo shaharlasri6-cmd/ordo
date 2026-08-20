@@ -1,0 +1,62 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.shahar.quickcontacts.app-mergeDebugResources-2:/values/values.xml",
+            "map": [
+                {
+                    "source": "/home/shahar/Downloads/QuickContactsWidget/app/src/main/res/values/strings.xml",
+                    "from": {
+                        "startLines": "1,3,2",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "16,141,68",
+                        "endColumns": "51,81,72",
+                        "endOffsets": "63,218,136"
+                    },
+                    "to": {
+                        "startLines": "5,6,7",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "192,244,326",
+                        "endColumns": "51,81,72",
+                        "endOffsets": "239,321,394"
+                    }
+                },
+                {
+                    "source": "/home/shahar/Downloads/QuickContactsWidget/app/src/main/res/values/themes.xml",
+                    "from": {
+                        "startLines": "1,8",
+                        "startColumns": "4,4",
+                        "startOffsets": "16,416",
+                        "endLines": "7,13",
+                        "endColumns": "12,12",
+                        "endOffsets": "411,786"
+                    },
+                    "to": {
+                        "startLines": "8,15",
+                        "startColumns": "4,4",
+                        "startOffsets": "399,799",
+                        "endLines": "14,20",
+                        "endColumns": "12,12",
+                        "endOffsets": "794,1169"
+                    }
+                },
+                {
+                    "source": "/home/shahar/Downloads/QuickContactsWidget/app/src/main/res/values/colors.xml",
+                    "from": {
+                        "startLines": "3,1,2",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "110,16,62",
+                        "endColumns": "42,45,47",
+                        "endOffsets": "148,57,105"
+                    },
+                    "to": {
+                        "startLines": "2,3,4",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "55,98,144",
+                        "endColumns": "42,45,47",
+                        "endOffsets": "93,139,187"
+                    }
+                }
+            ]
+        }
+    ]
+}

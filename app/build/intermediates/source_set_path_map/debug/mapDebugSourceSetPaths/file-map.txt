@@ -1,0 +1,7 @@
+com.shahar.quickcontacts.app-pngs-0 /home/shahar/Downloads/QuickContactsWidget/app/build/generated/res/pngs/debug
+com.shahar.quickcontacts.app-resValues-1 /home/shahar/Downloads/QuickContactsWidget/app/build/generated/res/resValues/debug
+com.shahar.quickcontacts.app-packageDebugResources-2 /home/shahar/Downloads/QuickContactsWidget/app/build/intermediates/incremental/debug/packageDebugResources/merged.dir
+com.shahar.quickcontacts.app-packageDebugResources-3 /home/shahar/Downloads/QuickContactsWidget/app/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
+com.shahar.quickcontacts.app-debug-4 /home/shahar/Downloads/QuickContactsWidget/app/build/intermediates/merged_res/debug/mergeDebugResources
+com.shahar.quickcontacts.app-debug-5 /home/shahar/Downloads/QuickContactsWidget/app/src/debug/res
+com.shahar.quickcontacts.app-main-6 /home/shahar/Downloads/QuickContactsWidget/app/src/main/res

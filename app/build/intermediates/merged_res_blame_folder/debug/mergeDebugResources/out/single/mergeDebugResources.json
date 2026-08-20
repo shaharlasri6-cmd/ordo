@@ -1,0 +1,66 @@
+[
+    {
+        "merged": "com.shahar.quickcontacts.app-debug-4:/layout_widget_contact_item.xml.flat",
+        "source": "com.shahar.quickcontacts.app-main-6:/layout/widget_contact_item.xml"
+    },
+    {
+        "merged": "com.shahar.quickcontacts.app-debug-4:/xml_demo_call_widget_info.xml.flat",
+        "source": "com.shahar.quickcontacts.app-main-6:/xml/demo_call_widget_info.xml"
+    },
+    {
+        "merged": "com.shahar.quickcontacts.app-debug-4:/layout_widget_demo_call.xml.flat",
+        "source": "com.shahar.quickcontacts.app-main-6:/layout/widget_demo_call.xml"
+    },
+    {
+        "merged": "com.shahar.quickcontacts.app-debug-4:/layout_widget_quick_contacts_5.xml.flat",
+        "source": "com.shahar.quickcontacts.app-main-6:/layout/widget_quick_contacts_5.xml"
+    },
+    {
+        "merged": "com.shahar.quickcontacts.app-debug-4:/drawable_contact_chip.xml.flat",
+        "source": "com.shahar.quickcontacts.app-main-6:/drawable/contact_chip.xml"
+    },
+    {
+        "merged": "com.shahar.quickcontacts.app-debug-4:/xml_quick_contacts_widget_info.xml.flat",
+        "source": "com.shahar.quickcontacts.app-main-6:/xml/quick_contacts_widget_info.xml"
+    },
+    {
+        "merged": "com.shahar.quickcontacts.app-debug-4:/layout_widget_quick_contacts.xml.flat",
+        "source": "com.shahar.quickcontacts.app-main-6:/layout/widget_quick_contacts.xml"
+    },
+    {
+        "merged": "com.shahar.quickcontacts.app-debug-4:/layout_widget_contacts_grid_3.xml.flat",
+        "source": "com.shahar.quickcontacts.app-main-6:/layout/widget_contacts_grid_3.xml"
+    },
+    {
+        "merged": "com.shahar.quickcontacts.app-debug-4:/layout_widget_quick_contacts_4.xml.flat",
+        "source": "com.shahar.quickcontacts.app-main-6:/layout/widget_quick_contacts_4.xml"
+    },
+    {
+        "merged": "com.shahar.quickcontacts.app-debug-4:/drawable_widget_background.xml.flat",
+        "source": "com.shahar.quickcontacts.app-main-6:/drawable/widget_background.xml"
+    },
+    {
+        "merged": "com.shahar.quickcontacts.app-debug-4:/layout_widget_contacts_grid_4.xml.flat",
+        "source": "com.shahar.quickcontacts.app-main-6:/layout/widget_contacts_grid_4.xml"
+    },
+    {
+        "merged": "com.shahar.quickcontacts.app-debug-4:/layout_widget_contacts_grid_5.xml.flat",
+        "source": "com.shahar.quickcontacts.app-main-6:/layout/widget_contacts_grid_5.xml"
+    },
+    {
+        "merged": "com.shahar.quickcontacts.app-debug-4:/drawable_ic_person.xml.flat",
+        "source": "com.shahar.quickcontacts.app-main-6:/drawable/ic_person.xml"
+    },
+    {
+        "merged": "com.shahar.quickcontacts.app-debug-4:/layout_widget_quick_contacts_3.xml.flat",
+        "source": "com.shahar.quickcontacts.app-main-6:/layout/widget_quick_contacts_3.xml"
+    },
+    {
+        "merged": "com.shahar.quickcontacts.app-debug-4:/drawable_contact_name_bg.xml.flat",
+        "source": "com.shahar.quickcontacts.app-main-6:/drawable/contact_name_bg.xml"
+    },
+    {
+        "merged": "com.shahar.quickcontacts.app-debug-4:/drawable-nodpi_app_icon.png.flat",
+        "source": "com.shahar.quickcontacts.app-main-6:/drawable-nodpi/app_icon.png"
+    }
+]

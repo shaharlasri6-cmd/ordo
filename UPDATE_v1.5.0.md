@@ -1,0 +1,12 @@
+# QuickContactsWidget v1.5.0
+
+- Calling animation now appears transparently over the current home screen instead of showing an app page.
+- Replaced the old dark full-screen transition with a deterministic, symmetric animation:
+  - three evenly timed expanding rings
+  - an eight-dot orbit at constant speed
+  - stable central contact initial
+  - subtle breathing status text
+  - small translucent status chip only
+- Demo widget uses the exact same overlay animation without placing a call.
+- Removed window dimming and transition animations so the launcher remains visually present underneath.
+- Overlay activity is excluded from Recents and leaves no visible app task behind.
