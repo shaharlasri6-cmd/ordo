@@ -3,3 +3,15 @@ signing/
 **/build/
 local.properties
 *.iml
+
+# Local build/cache
+.gradle/
+.kotlin/
+**/build/
+local.properties
+*.iml
+
+# Never store signing keys
+signing/
+*.jks
+*.keystore
