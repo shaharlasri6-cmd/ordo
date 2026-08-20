@@ -5,6 +5,9 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Typeface
@@ -47,6 +50,7 @@ class MainActivity : Activity() {
         buildUi()
         requestNeededPermissions()
         mainHandler.postDelayed({ updateManager.check(false) }, 900)
+        mainHandler.postDelayed({ ensureOverlayPermission(false) }, 1400)
     }
 
     private fun buildUi() {
@@ -122,6 +126,10 @@ class MainActivity : Activity() {
         demoWidget.setOnClickListener { pinDemoWidget() }
         content.addView(demoWidget)
 
+        val overlayPermission = actionCard("◎", "אנימציה מעל מסך הבית", "הרשאה חד-פעמית כדי שהאנימציה לא תפתח את האפליקציה", false)
+        overlayPermission.setOnClickListener { ensureOverlayPermission(true) }
+        content.addView(overlayPermission)
+
         val updates = actionCard("↻", "בדוק עדכונים", "בדיקה והורדה ישירות מתוך האפליקציה", false)
         updates.setOnClickListener { updateManager.check(true) }
         content.addView(updates)
@@ -164,6 +172,27 @@ class MainActivity : Activity() {
         root.addView(scroll, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
         setContentView(root)
         renderSelected()
+    }
+
+
+    private fun ensureOverlayPermission(force: Boolean) {
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M || Settings.canDrawOverlays(this)) {
+            if (force) Toast.makeText(this, "האנימציה מעל מסך הבית כבר פעילה", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("הפעל אנימציה מעל מסך הבית")
+            .setMessage("כדי שהאנימציה תופיע מעל הווידג'ט בלי לפתוח את האפליקציה, Android צריך הרשאת ‘הצגה מעל אפליקציות אחרות’. זו הרשאה חד-פעמית.")
+            .setNegativeButton("אחר כך", null)
+            .setPositiveButton("אפשר עכשיו") { _, _ ->
+                try {
+                    startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")))
+                } catch (_: Exception) {
+                    startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION))
+                }
+            }
+            .show()
     }
 
     private fun actionCard(symbol: String, title: String, subtitle: String, primary: Boolean): View {

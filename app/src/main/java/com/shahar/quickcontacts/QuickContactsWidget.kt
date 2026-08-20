@@ -55,10 +55,10 @@ class QuickContactsWidget : AppWidgetProvider() {
             views.setRemoteAdapter(R.id.contacts_grid, serviceIntent)
             views.setEmptyView(R.id.contacts_grid, R.id.empty_text)
 
-            val templateIntent = Intent(context, CallTransitionActivity::class.java).apply {
+            val templateIntent = Intent(context, CallActionReceiver::class.java).apply {
                 data = Uri.parse("qcw://call/$widgetId")
             }
-            val template = PendingIntent.getActivity(
+            val template = PendingIntent.getBroadcast(
                 context,
                 widgetId,
                 templateIntent,
