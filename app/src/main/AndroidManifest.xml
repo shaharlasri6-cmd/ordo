@@ -16,8 +16,8 @@
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
-        android:icon="@drawable/ordo_icon_v2"
-        android:roundIcon="@drawable/ordo_icon_v2"
+        android:icon="@mipmap/ordo_launcher_v3"
+        android:roundIcon="@mipmap/ordo_launcher_v3"
         android:theme="@style/Theme.QuickContacts">
 
         <activity
