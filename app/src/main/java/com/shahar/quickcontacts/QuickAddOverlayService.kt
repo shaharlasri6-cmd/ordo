@@ -80,70 +80,19 @@ class QuickAddOverlayService : Service() {
     }
 
     private fun showReminder() {
-        selectedDate = Calendar.getInstance()
-
-        val card = baseCard("תזכורת חדשה", "היום כברירת מחדל · אפשר לבחור יום אחר")
+        val card = baseCard("תזכורת חדשה", "כתוב מה להזכיר ובחר זמן מהיר")
         val input = input("מה להזכיר?")
         card.addView(input, fieldParams())
 
-        val dateLabel = TextView(this).apply {
-            text = "היום"
-            textSize = 14f
-            typeface = Typeface.DEFAULT_BOLD
-            setTextColor(UiKit.mint)
-            gravity = Gravity.CENTER
-            background = UiKit.rounded(Color.rgb(29, 36, 56), dp(14), Color.rgb(55, 65, 92))
-            setPadding(dp(14), dp(9), dp(14), dp(9))
-            setOnClickListener {
-                val now = Calendar.getInstance()
-                val d = DatePickerDialog(
-                    this@QuickAddOverlayService,
-                    { _, y, m, day ->
-                        selectedDate.set(Calendar.YEAR, y)
-                        selectedDate.set(Calendar.MONTH, m)
-                        selectedDate.set(Calendar.DAY_OF_MONTH, day)
-                        text = if (sameDay(selectedDate, now)) {
-                            "היום"
-                        } else {
-                            SimpleDateFormat("dd/MM", Locale.getDefault()).format(Date(selectedDate.timeInMillis))
-                        }
-                    },
-                    selectedDate.get(Calendar.YEAR),
-                    selectedDate.get(Calendar.MONTH),
-                    selectedDate.get(Calendar.DAY_OF_MONTH)
-                )
-                d.window?.setType(
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-                    else
-                        @Suppress("DEPRECATION") WindowManager.LayoutParams.TYPE_PHONE
-                )
-                d.show()
-            }
-        }
-        card.addView(dateLabel, LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        ).apply { bottomMargin = dp(8) })
-
-        val time = TimePicker(this).apply {
-            setIs24HourView(true)
-            hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-            minute = Calendar.getInstance().get(Calendar.MINUTE)
-        }
-        card.addView(time, LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            dp(155)
-        ).apply { bottomMargin = dp(8) })
+        var alertMode = "sound"
 
         val modes = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER
         }
-        var alertMode = "sound"
-        val chips = mutableListOf<TextView>()
+        val modeChips = mutableListOf<TextView>()
 
-        fun chip(label: String, mode: String): TextView {
+        fun modeChip(label: String, mode: String): TextView {
             return TextView(this).apply {
                 text = label
                 textSize = 13f
@@ -154,15 +103,20 @@ class QuickAddOverlayService : Service() {
                 background = UiKit.rounded(Color.rgb(29,36,56), dp(14), Color.rgb(55,65,92))
                 setOnClickListener {
                     alertMode = mode
-                    chips.forEach { it.background = UiKit.rounded(Color.rgb(29,36,56), dp(14), Color.rgb(55,65,92)) }
+                    modeChips.forEach {
+                        it.background = UiKit.rounded(
+                            Color.rgb(29,36,56), dp(14), Color.rgb(55,65,92)
+                        )
+                    }
                     background = UiKit.rounded(UiKit.accent, dp(14))
                 }
             }
         }
-        val sound = chip("צליל", "sound")
-        val vibrate = chip("רטט", "vibrate")
-        val silent = chip("שקט", "silent")
-        chips.addAll(listOf(sound, vibrate, silent))
+
+        val sound = modeChip("צליל", "sound")
+        val vibrate = modeChip("רטט", "vibrate")
+        val silent = modeChip("שקט", "silent")
+        modeChips.addAll(listOf(sound, vibrate, silent))
         sound.background = UiKit.rounded(UiKit.accent, dp(14))
         modes.addView(sound)
         modes.addView(vibrate, LinearLayout.LayoutParams(
@@ -173,64 +127,169 @@ class QuickAddOverlayService : Service() {
         card.addView(modes, LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
-        ).apply { bottomMargin = dp(12) })
+        ).apply { bottomMargin = dp(14) })
+
+        val quickGrid = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+        }
+
+        fun saveAt(offsetMillis: Long) {
+            val title = input.text.toString().trim()
+            if (title.isEmpty()) {
+                Toast.makeText(this, "כתוב קודם מה להזכיר", Toast.LENGTH_SHORT).show()
+                return
+            }
+            saveReminder(title, System.currentTimeMillis() + offsetMillis, alertMode)
+        }
+
+        fun quickRow(vararg entries: Pair<String, Long>): LinearLayout {
+            return LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER
+                entries.forEachIndexed { index, entry ->
+                    val button = TextView(this@QuickAddOverlayService).apply {
+                        text = entry.first
+                        textSize = 13f
+                        typeface = Typeface.DEFAULT_BOLD
+                        gravity = Gravity.CENTER
+                        setTextColor(UiKit.ink)
+                        setPadding(dp(10), dp(10), dp(10), dp(10))
+                        background = UiKit.rounded(
+                            Color.rgb(29,36,56), dp(14), Color.rgb(55,65,92)
+                        )
+                        setOnClickListener { saveAt(entry.second) }
+                    }
+                    addView(button, LinearLayout.LayoutParams(
+                        0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f
+                    ).apply {
+                        if (index > 0) marginStart = dp(7)
+                    })
+                }
+            }
+        }
+
+        quickGrid.addView(quickRow(
+            "עוד 15 דקות" to 15 * 60_000L,
+            "עוד 30 דקות" to 30 * 60_000L
+        ))
+        quickGrid.addView(quickRow(
+            "עוד שעה" to 60 * 60_000L,
+            "עוד 5 שעות" to 5 * 60 * 60_000L
+        ), LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        ).apply { topMargin = dp(7) })
+        quickGrid.addView(quickRow(
+            "עוד 10 שעות" to 10 * 60 * 60_000L
+        ), LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        ).apply { topMargin = dp(7) })
+
+        card.addView(quickGrid, LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        ).apply { bottomMargin = dp(10) })
+
+        val custom = TextView(this).apply {
+            text = "זמן אחר"
+            textSize = 14f
+            typeface = Typeface.DEFAULT_BOLD
+            setTextColor(UiKit.mint)
+            gravity = Gravity.CENTER
+            setPadding(dp(14), dp(10), dp(14), dp(10))
+            background = UiKit.rounded(
+                Color.rgb(20,25,40), dp(14), Color.rgb(70,82,115)
+            )
+            setOnClickListener {
+                val title = input.text.toString().trim()
+                if (title.isEmpty()) {
+                    Toast.makeText(
+                        this@QuickAddOverlayService,
+                        "כתוב קודם מה להזכיר",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    openCustomReminderTime(title, alertMode)
+                }
+            }
+        }
+        card.addView(custom, LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        ).apply { bottomMargin = dp(10) })
 
         card.addView(buttonRow(
             cancel = { finishOverlay() },
-            saveLabel = "שמור",
-            save = {
-                val title = input.text.toString().trim()
-                if (title.isEmpty()) return@buttonRow
-
-                val whenAt = Calendar.getInstance().apply {
-                    set(
-                        selectedDate.get(Calendar.YEAR),
-                        selectedDate.get(Calendar.MONTH),
-                        selectedDate.get(Calendar.DAY_OF_MONTH),
-                        time.hour,
-                        time.minute,
-                        0
-                    )
-                    set(Calendar.MILLISECOND, 0)
-                }
-
-                if (whenAt.timeInMillis <= System.currentTimeMillis()) {
-                    Toast.makeText(this, "הזמן שבחרת כבר עבר", Toast.LENGTH_SHORT).show()
-                    return@buttonRow
-                }
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    val alarm = getSystemService(ALARM_SERVICE) as AlarmManager
-                    if (!alarm.canScheduleExactAlarms()) {
-                        try {
-                            startActivity(
-                                Intent(
-                                    Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
-                                    android.net.Uri.parse("package:$packageName")
-                                ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            )
-                        } catch (_: Exception) { }
-                    }
-                }
-
-                val item = ReminderItem(
-                    System.currentTimeMillis(),
-                    title,
-                    whenAt.timeInMillis,
-                    alertMode
-                )
-                val reminders = PersonalStore.loadReminders(this)
-                reminders.add(item)
-                PersonalStore.saveReminders(this, reminders)
-                ReminderScheduler.schedule(this, item)
-                QuickContactsWidget.refreshAll(this)
-                Toast.makeText(this, "התזכורת נשמרה", Toast.LENGTH_SHORT).show()
-                finishOverlay()
-            }
+            saveLabel = "ביטול",
+            save = { finishOverlay() }
         ))
 
-        attach(card, 500)
+        attach(card, 455)
         focusKeyboard(input)
+    }
+
+    private fun saveReminder(title: String, atMillis: Long, alertMode: String) {
+        val item = ReminderItem(
+            System.currentTimeMillis(),
+            title,
+            atMillis,
+            alertMode
+        )
+        val reminders = PersonalStore.loadReminders(this)
+        reminders.add(item)
+        PersonalStore.saveReminders(this, reminders)
+        ReminderScheduler.schedule(this, item)
+        QuickContactsWidget.refreshAll(this)
+        Toast.makeText(this, "התזכורת נשמרה", Toast.LENGTH_SHORT).show()
+        finishOverlay()
+    }
+
+    private fun openCustomReminderTime(title: String, alertMode: String) {
+        val now = Calendar.getInstance()
+        val dateDialog = DatePickerDialog(
+            this,
+            { _, year, month, day ->
+                val timeDialog = android.app.TimePickerDialog(
+                    this,
+                    { _, hour, minute ->
+                        val whenAt = Calendar.getInstance().apply {
+                            set(year, month, day, hour, minute, 0)
+                            set(Calendar.MILLISECOND, 0)
+                        }
+                        if (whenAt.timeInMillis <= System.currentTimeMillis()) {
+                            Toast.makeText(
+                                this,
+                                "הזמן שבחרת כבר עבר",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            saveReminder(title, whenAt.timeInMillis, alertMode)
+                        }
+                    },
+                    now.get(Calendar.HOUR_OF_DAY),
+                    now.get(Calendar.MINUTE),
+                    true
+                )
+                timeDialog.window?.setType(
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                    else
+                        @Suppress("DEPRECATION") WindowManager.LayoutParams.TYPE_PHONE
+                )
+                timeDialog.show()
+            },
+            now.get(Calendar.YEAR),
+            now.get(Calendar.MONTH),
+            now.get(Calendar.DAY_OF_MONTH)
+        )
+        dateDialog.window?.setType(
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+            else
+                @Suppress("DEPRECATION") WindowManager.LayoutParams.TYPE_PHONE
+        )
+        dateDialog.show()
     }
 
     private fun baseCard(title: String, subtitle: String): LinearLayout {
