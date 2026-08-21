@@ -37,7 +37,20 @@ class MainActivity:Activity(){
   val up=UiKit.compactButton(this,"↻  בדוק עדכונים");up.setOnClickListener{updateManager.check(true)};c.addView(up,LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT).apply{topMargin=UiKit.dp(this@MainActivity,7)})
   scroll.addView(c);root.addView(scroll,LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,0,1f));setContentView(root);refreshSummary()
  }
- private fun pinOrdoWidget(){val manager=AppWidgetManager.getInstance(this);val provider=ComponentName(this,QuickContactsWidget::class.java);if(android.os.Build.VERSION.SDK_INT>=26&&manager.isRequestPinAppWidgetSupported){manager.requestPinAppWidget(provider,null,null)}else{android.widget.Toast.makeText(this,"במסך הבית: לחיצה ארוכה → ווידג'טים → Ordo",android.widget.Toast.LENGTH_LONG).show()}}
+ private fun pinOrdoWidget(){
+  val manager=AppWidgetManager.getInstance(this)
+  val provider=ComponentName(this,QuickContactsWidget::class.java)
+  val existing=manager.getAppWidgetIds(provider)
+  if(existing.isNotEmpty()){
+   android.widget.Toast.makeText(this,"הווידג'ט של Ordo כבר קיים במסך הבית",android.widget.Toast.LENGTH_SHORT).show()
+   return
+  }
+  if(android.os.Build.VERSION.SDK_INT>=26&&manager.isRequestPinAppWidgetSupported){
+   manager.requestPinAppWidget(provider,null,null)
+  }else{
+   android.widget.Toast.makeText(this,"במסך הבית: לחיצה ארוכה → ווידג'טים → Ordo",android.widget.Toast.LENGTH_LONG).show()
+  }
+ }
  private fun refreshSummary(){val open=PersonalStore.loadTasks(this).count{!it.done};val now=System.currentTimeMillis();val nr=PersonalStore.loadReminders(this).filter{it.atMillis>=now}.minByOrNull{it.atMillis};val ne=PersonalStore.loadEvents(this).filter{it.atMillis>=now}.minByOrNull{it.atMillis};val f=SimpleDateFormat("HH:mm",Locale.getDefault());summary.text=buildString{append("היום שלך  •  $open משימות פתוחות");nr?.let{append("\nהתזכורת הבאה: ${it.title} · ${f.format(Date(it.atMillis))}")};ne?.let{append("\nהאירוע הבא: ${it.title} · ${f.format(Date(it.atMillis))}")}}}
  private fun requestNotificationPermission(){if(Build.VERSION.SDK_INT>=33&&checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)!=PackageManager.PERMISSION_GRANTED)requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS),701)}
 }
