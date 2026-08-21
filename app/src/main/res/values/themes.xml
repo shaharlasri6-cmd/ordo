@@ -16,4 +16,14 @@
         <item name="android:windowAnimationStyle">@null</item>
         <item name="android:colorAccent">#55E6C7</item>
     </style>
+    <style name="Theme.Ordo.FullScreenReminder" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:colorAccent">#5D6BFF</item>
+        <item name="android:navigationBarColor">#080C17</item>
+        <item name="android:windowLightNavigationBar">false</item>
+    </style>
 </resources>
